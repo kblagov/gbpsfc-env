@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+COLLECTOR_IP=192.168.53.2
+COLLECTOR_PORT=6343
+AGENT_IP=eth2
+HEADER_BYTES=128
+SAMPLING_N=64
+POLLING_SECS=10
+
+hostnum=${HOSTNAME#"gbpsfc"}
+sw="sw$hostnum"
+
+sudo ovs-vsctl -- --id=@sflow create sflow agent=${AGENT_IP} \
+target=\"${COLLECTOR_IP}:${COLLECTOR_PORT}\" header=${HEADER_BYTES} \
+sampling=${SAMPLING_N} polling=${POLLING_SECS} -- set bridge $sw sflow=@sflow >~/sflow_uuid && cat ~/sflow_uuid
