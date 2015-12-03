@@ -1,12 +1,11 @@
 #!/usr/bin/env sh
 
-COLLECTOR_IP=192.168.53.2
-COLLECTOR_PORT=6343
-AGENT_IP=eth2
-HEADER_BYTES=128
-SAMPLING_N=64
-POLLING_SECS=10
+if [ -f ~/sflow_uuid ]; then
+  echo "sflow_uuid already present!"
+  exit 1
+fi
 
+. /vagrant/sflow/internal_settings
 hostnum=${HOSTNAME#"gbpsfc"}
 sw="sw$hostnum"
 
