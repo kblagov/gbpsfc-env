@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 if [ $1 ]; then
   vagrant ssh $1 -c "bash -E /vagrant/sflow/internal_start"

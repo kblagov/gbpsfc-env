@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 if [ $1 ]; then
   vagrant ssh $1 -c "sudo ovs-vsctl list sflow"
