@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.cache.scope = :box
   end
   # run our bootstrapping for the system
-  config.vm.provision 'shell', path: 'bootstrap.sh', :args => odl
+#  config.vm.provision 'shell', path: 'bootstrap.sh', :args => odl
 
   num_nodes = (ENV['NUM_NODES'] || 1).to_i
 
@@ -27,7 +27,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vm_ip = ips[n]
       vm_ip_sflow = ips_sflow[n]
       vm_index = n+1
-      compute.vm.box = "ubuntu/trusty64"
+      compute.vm.box = "alagalah/gbpsfc-trusty64"
+      compute.vm.box_version = "1.0.0"
+#      compute.vm.box = "ubuntu/trusty64"
       compute.vm.hostname = "gbpsfc#{vm_index}"
       compute.vm.network "private_network", ip: "#{vm_ip}"
       compute.vm.network "private_network", ip: "#{vm_ip_sflow}"

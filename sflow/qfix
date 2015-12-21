@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [ $1 ]; then
+  vagrant ssh $1 -c "rm ~/sflow_uuid"
+else
+  . sflow/settings
+  for i in $SFLOW_LIST
+  do
+    echo; echo "gbpsfc$i"
+    vagrant ssh gbpsfc$i -c "rm ~/sflow_uuid"
+  done
+fi
