@@ -8,4 +8,5 @@ fi
 hostnum=${HOSTNAME#"gbpsfc"}
 sw="sw$hostnum"
 
-sudo ovs-vsctl remove bridge $sw sflow `cat ~/sflow_uuid` && rm ~/sflow_uuid
+sudo ovs-vsctl remove bridge $sw sflow `cat ~/sflow_uuid` 
+rm ~/sflow_uuid
