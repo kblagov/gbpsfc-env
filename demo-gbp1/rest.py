@@ -57,184 +57,186 @@ def post(host, port, uri, data, debug=False):
 
 def get_tenant_data():
     return {
-    "policy:tenant": {
-        "contract": [
-            {
-                "clause": [
-                    {
-                        "name": "allow-http-clause", 
-                        "subject-refs": [
-                            "allow-http-subject", 
-                            "allow-icmp-subject"
-                        ]
-                    }
-                ], 
-                "id": "icmp-http-contract", 
-                "subject": [
-                    {
-                        "name": "allow-http-subject", 
-                        "rule": [
-                            {
-                                "classifier-ref": [
-                                    {
-                                        "direction": "in", 
-                                        "name": "http-dest",
-					"instance-name" : "http-dest",
-                                    }, 
-                                    {
-                                        "direction": "out", 
-                                        "name": "http-src",
-					"instance-name" : "http-src"
-                                    }
-                                ],
-                                                    "action-ref": [
-                      {
-                        "name": "allow1",
-                        "order": 0
-                      }
-                    ],
-
-                                "name": "allow-http-rule"
-                            }
-                        ]
-                    }, 
-                    {
-                        "name": "allow-icmp-subject", 
-                        "rule": [
-                            {
-                                "classifier-ref": [
-                                    {
-                                        "name": "icmp",
-					"instance-name" : "icmp"
-                                    }
-                                ], 
-                                                    "action-ref": [
-                      {
-                        "name": "allow1",
-                        "order": 0
-                      }
-                    ],
-
-                                "name": "allow-icmp-rule"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ], 
-        "endpoint-group": [
-            {
-                "consumer-named-selector": [
-                    {
-                        "contract": [
-                            "icmp-http-contract"
-                        ], 
-                        "name": "webservers-clients-icmp-http-contract"
-                    }
-                ], 
-                "id": "clients", 
-                "provider-named-selector": []
-            }, 
-            {
-                "consumer-named-selector": [], 
-                "id": "webservers", 
-                "provider-named-selector": [
-                    {
-                        "contract": [
-                            "icmp-http-contract"
-                        ], 
-                        "name": "webservers-clients-icmp-http-contract"
-                    }
-                ]
-            }
-        ], 
-        "id": "tenant-dobre", 
-        "l2-bridge-domain": [
-            {
-                "id": "bridge-domain1", 
+        "policy:tenant": {
+          "id": "tenant-red",
+          "name": "GBPPOC",
+          "forwarding-context": {
+            "l2-bridge-domain": [
+              {
+                "id": "bridge-domain1",
                 "parent": "l3-context-vrf-red"
-            }
-        ], 
-        "l2-flood-domain": [
-            {
-                "id": "flood-domain-1", 
-                "parent": "bridge-domain1"
-            }, 
-            {
-                "id": "flood-domain1", 
-                "parent": "bridge-domain1"
-            }
-        ], 
-        "l3-context": [
-            {
-                "id": "l3-context-vrf-red"
-            }
-        ], 
-        "name": "GBPPOC", 
-        "subject-feature-instances": {
-            "classifier-instance": [
-                {
-                    "classifier-definition-id": "Classifier-L4",
-                    "name": "http-dest", 
-                    "parameter-value": [
-                        {
-                            "int-value": "6", 
-                            "name": "proto"
-                        }, 
-                        {
-                            "int-value": "80", 
-                            "name": "destport"
-                        }
-                    ]
-                }, 
-                {
-                    "classifier-definition-id": "Classifier-L4",
-                    "name": "http-src", 
-                    "parameter-value": [
-                        {
-                            "int-value": "6", 
-                            "name": "proto"
-                        }, 
-                        {
-                            "int-value": "80", 
-                            "name": "sourceport"
-                        }
-                    ]
-                }, 
-                {
-                    "classifier-definition-id": "Classifier-IP-Protocol",
-                    "name": "icmp", 
-                    "parameter-value": [
-                        {
-                            "int-value": "1", 
-                            "name": "proto"
-                        }
-                    ]
-                }
+              }
             ],
-          "action-instance": [
-            {
-              "name": "allow1",
-              "action-definition-id": "Action-Allow"
-            }
-          ]
-        }, 
-        "subnet": [
-            {
-                "id": "subnet-10.0.35.0/24", 
-                "ip-prefix": "10.0.35.1/24", 
-                "parent": "flood-domain-1", 
+            "l2-flood-domain": [
+              {
+                "id": "flood-domain-1",
+                "parent": "bridge-domain1"
+              },
+              {
+                "id": "flood-domain1",
+                "parent": "bridge-domain1"
+              }
+            ],
+            "l3-context": [
+              {
+                "id": "l3-context-vrf-red"
+              }
+            ],
+            "subnet": [
+              {
+                "id": "subnet-10.0.35.0/24",
+                "ip-prefix": "10.0.35.1/24",
+                "parent": "flood-domain-1",
                 "virtual-router-ip": "10.0.35.1"
-            }, 
-            {
-                "id": "subnet-10.0.36.0/24", 
-                "ip-prefix": "10.0.36.1/24", 
-                "parent": "flood-domain1", 
+              },
+              {
+                "id": "subnet-10.0.36.0/24",
+                "ip-prefix": "10.0.36.1/24",
+                "parent": "flood-domain1",
                 "virtual-router-ip": "10.0.36.1"
+              }
+            ]
+          },
+          "policy": {
+            "contract": [
+              {
+                "clause": [
+                  {
+                    "name": "allow-http-clause",
+                    "subject-refs": [
+                      "allow-http-subject",
+                      "allow-icmp-subject"
+                    ]
+                  }
+                ],
+                "id": "icmp-http-contract",
+                "subject": [
+                  {
+                    "name": "allow-http-subject",
+                    "rule": [
+                      {
+                        "classifier-ref": [
+                          {
+                            "direction": "in",
+                            "name": "http-dest",
+                            "instance-name": "http-dest"
+                          },
+                          {
+                            "direction": "out",
+                            "name": "http-src",
+                            "instance-name": "http-src"
+                          }
+                        ],
+                        "action-ref": [
+                          {
+                            "name": "allow1",
+                            "order": 0
+                          }
+                        ],
+                        "name": "allow-http-rule"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "allow-icmp-subject",
+                    "rule": [
+                      {
+                        "classifier-ref": [
+                          {
+                            "name": "icmp",
+                            "instance-name": "icmp"
+                          }
+                        ],
+                        "action-ref": [
+                          {
+                            "name": "allow1",
+                            "order": 0
+                          }
+                        ],
+                        "name": "allow-icmp-rule"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "endpoint-group": [
+              {
+                "consumer-named-selector": [
+                  {
+                    "contract": [
+                      "icmp-http-contract"
+                    ],
+                    "name": "webservers-clients-icmp-http-contract"
+                  }
+                ],
+                "id": "clients",
+                "provider-named-selector": []
+              },
+              {
+                "consumer-named-selector": [],
+                "id": "webservers",
+                "provider-named-selector": [
+                  {
+                    "contract": [
+                      "icmp-http-contract"
+                    ],
+                    "name": "webservers-clients-icmp-http-contract"
+                  }
+                ]
+              }
+            ],
+            "subject-feature-instances": {
+              "classifier-instance": [
+                {
+                  "classifier-definition-id": "Classifier-L4",
+                  "name": "http-dest",
+                  "parameter-value": [
+                    {
+                      "int-value": "6",
+                      "name": "proto"
+                    },
+                    {
+                      "int-value": "80",
+                      "name": "destport"
+                    }
+                  ]
+                },
+                {
+                  "classifier-definition-id": "Classifier-L4",
+                  "name": "http-src",
+                  "parameter-value": [
+                    {
+                      "int-value": "6",
+                      "name": "proto"
+                    },
+                    {
+                      "int-value": "80",
+                      "name": "sourceport"
+                    }
+                  ]
+                },
+                {
+                  "classifier-definition-id": "Classifier-IP-Protocol",
+                  "name": "icmp",
+                  "parameter-value": [
+                    {
+                      "int-value": "1",
+                      "name": "proto"
+                    }
+                  ]
+                }
+              ],
+              "action-instance": [
+                {
+                  "name": "allow1",
+                  "action-definition-id": "Action-Allow"
+                }
+              ]
             }
-        ]
+          }
+        }
     }
-            }
 
 # Main definition - constants
  
@@ -251,7 +253,8 @@ def get_tenant_data():
 # Main Program
 
 def get_tenant_uri():
-    return "/restconf/config/policy:tenants/policy:tenant/tenant-dobre"
+    return "/restconf/config/policy:tenants/policy:tenant/tenant-red"
+
 
 def get_tunnel_data():
     return {
@@ -334,7 +337,7 @@ def get_endpoint_data():
             }
         ], 
         "port-name": "vethl-h35_2", 
-        "tenant": "tenant-dobre"
+        "tenant": "tenant-red"
     }
 },
             {
@@ -354,7 +357,7 @@ def get_endpoint_data():
             }
         ], 
         "port-name": "vethl-h35_3", 
-        "tenant": "tenant-dobre"
+        "tenant": "tenant-red"
     }
 },
             {
@@ -374,7 +377,7 @@ def get_endpoint_data():
             }
         ], 
         "port-name": "vethl-h35_4", 
-        "tenant": "tenant-dobre"
+        "tenant": "tenant-red"
     }
 },
             {
@@ -394,7 +397,7 @@ def get_endpoint_data():
             }
         ], 
         "port-name": "vethl-h35_5", 
-        "tenant": "tenant-dobre"
+        "tenant": "tenant-red"
     }
 },
             {
@@ -414,7 +417,7 @@ def get_endpoint_data():
             }
         ], 
         "port-name": "vethl-h36_2", 
-        "tenant": "tenant-dobre"
+        "tenant": "tenant-red"
     }
 },
             {
@@ -434,7 +437,7 @@ def get_endpoint_data():
             }
         ], 
         "port-name": "vethl-h36_3", 
-        "tenant": "tenant-dobre"
+        "tenant": "tenant-red"
     }
 },
             {
@@ -454,7 +457,7 @@ def get_endpoint_data():
             }
         ], 
         "port-name": "vethl-h36_4", 
-        "tenant": "tenant-dobre"
+        "tenant": "tenant-red"
     }
 },{
     "input": {
@@ -473,7 +476,7 @@ def get_endpoint_data():
             }
         ], 
         "port-name": "vethl-h36_5", 
-        "tenant": "tenant-dobre"
+        "tenant": "tenant-red"
     }
 }]
 
